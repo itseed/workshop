@@ -22,6 +22,14 @@
         >
           GitHub
         </a>
+        <a
+          href="https://github.com/itseed/workshop"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="button--grey"
+        >
+          Sourcecode
+        </a>
       </div>
     </div>
   </div>
@@ -31,7 +39,7 @@
 export default {}
 </script>
 
-<style>
+<style scope>
 .container {
   margin: 0 auto;
   min-height: 100vh;
