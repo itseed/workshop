@@ -1,4 +1,4 @@
-// require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` })
+require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` })
 export default {
   // Target (https://go.nuxtjs.dev/config-target)
   target: 'static',
@@ -12,7 +12,11 @@ export default {
       { hid: 'description', name: 'description', content: '' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css2?family=Prompt:wght@300;400&display=swap'
+      }
     ],
     script: [
       { src: 'https://static.line-scdn.net/liff/edge/2/sdk.js', charset: 'utf-8' }
@@ -56,14 +60,14 @@ export default {
     proxy: true
   },
 
-  proxy: {
-    '/api/': {
+  proxy: [
+    ['/api/', {
       target: process.env.BASE_API_URL,
       pathRewrite: {
         '^/api/checkCustomer' : '/api/v1/customers/getID'
       }
-    }
-  },
+    }]
+  ],
 
   // Content module configuration (https://go.nuxtjs.dev/config-content)
   content: {},
