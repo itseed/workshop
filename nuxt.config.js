@@ -60,7 +60,7 @@ export default {
     '/api/': {
       target: process.env.BASE_API_URL,
       pathRewrite: {
-        '^/api/checkUser' : '/api/v1/users/getID'
+        '^/api/checkCustomer' : '/api/v1/customers/getID'
       }
     }
   },

@@ -1,13 +1,17 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Response;
+use App\Users;
+use Firebase\JWT\JWT;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Laravel\Lumen\Routing\Controller as BaseController;
 
-class UserController extends Controller
+class UserController extends BaseController
 {
     /**
-     * Create a new controller for User.
+     * Create a new controller instance.
      *
      * @return void
      */
@@ -16,36 +20,77 @@ class UserController extends Controller
         //
     }
 
-    public function getAll()
+    public function register(Request $request)
     {
-        $results = app('db')->select("SELECT * FROM users");
-        return $this->responseSuccess($results);
+        // validator
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|unique:users',
+            'username' => 'required|unique:users',
+            'password' => 'required',
+            'name' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+
+            return $this->responseRequestError($errors);
+        } else {
+            $user = new Users();
+            $user->email = $request->email;
+            $user->name = $request->name;
+            $user->username = $request->username;
+            $user->password = Hash::make($request->password);
+
+            if ($user->save()) {
+                $token = $this->jwt($user);
+                $user['api_token'] = $token;
+                return $this->responseRequestSuccess($user);
+            } else {
+                return $this->responseRequestError('Cannot Register');
+            }
+        }
     }
 
-    public function getID($id)
+    public function login(Request $request)
     {
-        return $this->responseSuccess('Get ID Data' . $id);
+
+        $user = Users::where('username', $request->username)
+            ->first();
+
+        if (!empty($user) && Hash::check($request->password, $user->password)) {
+            $token = $this->jwt($user);
+            $user["api_token"] = $token;
+
+            return $this->responseRequestSuccess($user);
+        } else {
+            return $this->responseRequestError("Username or password is incorrect");
+        }
     }
 
-    public function addData()
+    protected function jwt($user)
     {
-        return $this->responseSuccess('Add Data');
+        $payload = [
+            'iss' => "lumen-jwt", // Issuer of the token
+            'sub' => $user->id, // Subject of the token
+            'iat' => time(), // Time when JWT was issued.
+            'exp' => time() + env('JWT_EXPIRE_HOUR') * 60 * 60, // Expiration time
+        ];
+
+        return JWT::encode($payload, env('JWT_SECRET'));
     }
 
-    public function updateData($id)
+    protected function responseRequestSuccess($ret)
     {
-        return $this->responseSuccess('Update Data' . $id);
+        return response()->json(['status' => 'success', 'data' => $ret], 200)
+            ->header('Access-Control-Allow-Origin', '*')
+            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     }
 
-    public function deleteData($id)
+    protected function responseRequestError($message = 'Bad request', $statusCode = 200)
     {
-        return $this->responseSuccess('Delete Data' . $id);
+        return response()->json(['status' => 'error', 'error' => $message], $statusCode)
+            ->header('Access-Control-Allow-Origin', '*')
+            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     }
 
-    protected function responseSuccess($res)
-    {
-        return response()->json(["status" => "success", "data" => $res], 200)
-            ->header("Access-Control-Allow-Origin", "*")
-            ->header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-    }
 }
