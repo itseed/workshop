@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Customers;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
-class CustomerController extends Controller
+class VerifyController extends Controller
 {
     /**
      * Create a new controller.
@@ -14,25 +15,18 @@ class CustomerController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+      
     }
 
-    public function getAll()
+    public function getID($uid)
     {
-        $results = app('db')->select("SELECT * FROM customers");
-        return $this->responseRequestSuccess($results);
-    }
-
-    public function getID($id)
-    {
-        // return $this->responseRequestSuccess('Get ID Data' . $id);
-        $customer = Customers::where('uid', $id)
+        $customer = Customers::where('uid', $uid)
         ->first();
 
         if (!empty($customer)) {
-            return $this->responseRequestSuccess($customer);
+            return $this->responseRequestSuccess(array('status' => true, 'msg' => '"UID is not available"'));
         } else {
-            return $this->responseRequestError("UID is incorrect");
+            return $this->responseRequestSuccess(array('status' => false, 'msg' => '"UID is available"'));
         }
     }
 
@@ -68,16 +62,6 @@ class CustomerController extends Controller
                 return $this->responseRequestError('Cannot Register');
             }
         }
-    }
-
-    public function updateData($id)
-    {
-        return $this->responseRequestSuccess('Update Data' . $id);
-    }
-
-    public function deleteData($id)
-    {
-        return $this->responseRequestSuccess('Delete Data' . $id);
     }
 
     protected function responseRequestSuccess($ret)

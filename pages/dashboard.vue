@@ -1,16 +1,6 @@
 <template>
   <b-container class="pt-3">
     <h3>Dashboard</h3>
-    <div class="content">
-        <p>
-          <strong>Username:</strong>
-          {{ loggedInUser.username }}
-        </p>
-        <p>
-          <strong>Email:</strong>
-          {{ loggedInUser.email }}
-        </p>
-      </div>
     <b-row class="pt-3">
       <b-col class="p-3">
         <b-card sub-title="Total Follower">
@@ -61,8 +51,8 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import BarChart from '~/components/BarChart'
+import { mapGetters } from 'vuex'
 
 const chartColors = {
   red: 'rgb(255, 99, 132)',
@@ -147,6 +137,9 @@ export default {
         }
       }
     }
+  },
+  mounted(){
+    // console.log('auth',this.$auth.loggedIn)
   }
 }
 </script>

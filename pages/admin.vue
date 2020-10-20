@@ -2,11 +2,12 @@
   <b-container fluid class="p-4 w-75">
     <b-row align-h="center">
       <b-col sm="12" md="12" lg="6" xl="4">
-        <h3 class="title" style="text-align: center;">Authentication</h3>
+        <h3 class="title" style="text-align: center;">Login</h3>
         <hr>
-        <b-form @submit="login">
+        <Notification :message="error" v-if="error"/>
+        <b-form @submit.prevent="login">
           <b-form-group id="input-group-1" label-for="input-1">
-            <b-form-input id="input-1" type="text" v-model="username" :state="inputState.username" placeholder="Username" />
+            <b-form-input id="input-1" type="text" v-model="email" :state="inputState.email" placeholder="Username" />
           </b-form-group>
           
           <b-form-group id="input-group-2" label-for="input-2">
@@ -28,37 +29,35 @@ export default {
   layout: 'auth',
   data(){
     return {
-      username: '',
+      email: '',
       password: '',
       inputState: {
-        username: null,
+        email: null,
         password: null,
-      }
+      },
+      error: null
     }
   },
   methods: {
-    async login(e) {
-      console.log('submit form');
-      e.preventDefault();
-      const payload = {
-        username: this.username,
-        password: this.password
-      };
-
-      console.log(payload)
-
+    async login() {
       try {
         await this.$auth.loginWith('local', {
-          data: payload
-        });
-        this.$router.push('/dashboard');
+          data: {
+          email: this.email,
+          password: this.password
+          }
+        })
+
+        this.$router.push('/dashboard')
       } catch (e) {
-        this.$router.push('/admin');
+        this.error = e.response.data.message
       }
     }
   },
   mounted(){
-    console.log('Auth', this.$auth.loggedInUser)
+    if(this.$auth.loggedIn){
+      this.$router.push('/dashboard')
+    }
   }
 }
 </script>

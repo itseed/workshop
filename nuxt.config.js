@@ -58,18 +58,19 @@ export default {
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
-    baseURL:process.env.BASE_API_URL,
+    baseURL:process.env.BASE_URL,
     proxy: true,
-    credentials: true
+    credentials: true,
   },
 
   proxy: [
     ['/api/', {
       target: process.env.BASE_API_URL,
       pathRewrite: {
-        '^/api/checkCustomer' : '/api/v1/customers/getID',
-        '^/api/login' : '/api/login',
-        '^/api/me' : '/api/profile'
+        '^/api/verify' : '/api/v1/verify',
+        '^/api/register' : '/api/v1/registerLine',
+        '^/api/login' : '/api/v1/login',
+        '^/api/me' : '/api/v1/profile'
       },
       changeOrigin: true
     }]

@@ -7,6 +7,16 @@
   </div>
 </template>
 
+<script>
+export default {
+  mounted(){
+    if(!this.$auth.loggedIn){
+      this.$router.push('/admin')
+    }
+  }
+}
+</script>
+
 <style>
   body {
     font-family: 'Prompt', sans-serif;

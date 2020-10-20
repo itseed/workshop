@@ -13,7 +13,7 @@
         <b-nav-item-dropdown right>
           <!-- Using 'button-content' slot -->
           <template #button-content>
-            Hi, Kriangkrai
+            Hi, {{ loggedInUser.name }}
           </template>
           <b-dropdown-item href="#">Profile</b-dropdown-item>
           <b-dropdown-item href="#" @click="logout">Sign Out</b-dropdown-item>
@@ -24,7 +24,12 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
+  computed: {
+    ...mapGetters(['loggedInUser'])
+  },
   methods: {
     async logout() {
       await this.$auth.logout();
