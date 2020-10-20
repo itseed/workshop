@@ -1,6 +1,16 @@
 <template>
   <b-container class="pt-3">
     <h3>Dashboard</h3>
+    <div class="content">
+        <p>
+          <strong>Username:</strong>
+          {{ loggedInUser.username }}
+        </p>
+        <p>
+          <strong>Email:</strong>
+          {{ loggedInUser.email }}
+        </p>
+      </div>
     <b-row class="pt-3">
       <b-col class="p-3">
         <b-card sub-title="Total Follower">
@@ -51,6 +61,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import BarChart from '~/components/BarChart'
 
 const chartColors = {
@@ -65,6 +76,10 @@ const chartColors = {
 
 export default {
   layout: 'backend',
+  middleware: 'auth',
+  computed: {
+    ...mapGetters(['loggedInUser'])
+  },
   components: {
     BarChart
   },

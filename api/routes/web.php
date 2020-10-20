@@ -28,13 +28,32 @@ $router->get('test/{uid}/{messages}', 'LineBotController@pushMessage');
 //     // return env('LINE_TOKEN');
 // });
 
+$router->group(['prefix' => 'api'], function () use ($router) {
+    // Matches "/api/register
+    $router->post('register', 'AuthController@register');
+    $router->post('login', 'AuthController@login');
+    // Matches "/api/profile
+    $router->get('profile', 'UserController@profile');
+
+    // Matches "/api/users/1 
+    //get one user by id
+    $router->get('users/{id}', 'UserController@singleUser');
+
+    // Matches "/api/users
+    $router->get('users', 'UserController@allUsers');
+ });
+
 $router->group(['prefix' => 'api/v1'], function () use ($router) {
     $router->post('/webhook', function () use ($router) {
         return 'success';
     });
 
-    $router->post('user/register', 'UserController@register');
-    $router->post('user/login', ['uses' => 'UserController@login']);
+    $router->post('register', 'UserController@register');
+    $router->post('login', ['uses' => 'UserController@login']);
+
+    $router->group(['prefix' => 'me'], function ($router) {
+        $router->get('/', 'UserController@me');
+    });
 
     $router->get('customers/getID/{id}', 'CustomerController@getID');
     $router->post('customers/insertData', 'CustomerController@addData');

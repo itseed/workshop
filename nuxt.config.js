@@ -53,21 +53,52 @@ export default {
     // https://go.nuxtjs.dev/content
     '@nuxt/content',
     'bootstrap-vue/nuxt',
+    '@nuxtjs/auth'
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
-    proxy: true
+    baseURL:process.env.BASE_API_URL,
+    proxy: true,
+    credentials: true
   },
 
   proxy: [
     ['/api/', {
       target: process.env.BASE_API_URL,
       pathRewrite: {
-        '^/api/checkCustomer' : '/api/v1/customers/getID'
-      }
+        '^/api/checkCustomer' : '/api/v1/customers/getID',
+        '^/api/login' : '/api/login',
+        '^/api/me' : '/api/profile'
+      },
+      changeOrigin: true
     }]
   ],
+
+  // proxy: {
+  //   '/api': {
+  //     target: process.env.BASE_API_URL,
+  //     pathRewrite: {
+  //       '^/api/checkCustomer' : '/api/v1/customers/getID',
+  //       '^/api/login' : '/api/v1/login'
+  //     }
+  //   }
+  // },
+
+  auth: {
+    strategies: {
+      local: {
+        endpoints: {
+          login: { url: '/api/login', method: 'post', propertyName: 'token' },
+          user: { url: '/api/me', method: 'get', propertyName: 'user' },
+          logout: false
+        }
+      }
+    },
+    redirect: {
+      login: '/admin'
+    }
+  },
 
   // Content module configuration (https://go.nuxtjs.dev/config-content)
   content: {},
