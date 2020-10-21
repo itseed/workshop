@@ -29,6 +29,12 @@ $router->get('test/{uid}/{messages}', 'LineBotController@pushMessage');
 // });
 
 $router->group(['prefix' => 'api/v1'], function () use ($router) {
+    // $router->post('/webhook', function () use ($router) {
+    //     return 'success';
+    // });
+
+    $router->post('webhook', 'LineBotController@bot');
+
     // Matches "/api/register
     $router->post('register', 'AuthController@register');
     $router->post('login', 'AuthController@login');

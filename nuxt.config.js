@@ -97,7 +97,8 @@ export default {
       }
     },
     redirect: {
-      login: '/admin'
+      login: '/admin',
+      logout: '/admin'
     }
   },
 

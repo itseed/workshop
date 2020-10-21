@@ -27,7 +27,7 @@ class VerifyController extends Controller
             return $this->responseRequestSuccess(array('status' => true, 'msg' => '"UID is not available"'));
         } else {
             return $this->responseRequestSuccess(array('status' => false, 'msg' => '"UID is available"'));
-        }
+        }        
     }
 
     public function addData(Request $request)
@@ -57,6 +57,8 @@ class VerifyController extends Controller
             $customer->statusMessage = $request->statusMessage;
 
             if ($customer->save()) {
+                $LineBotController = new LineBotController();
+                $LineBotController->linkRichmenu($request->uid,'richmenu-cd2458b729eb21c25566140ba2cc0c71');
                 return $this->responseRequestSuccess($customer);
             } else {
                 return $this->responseRequestError('Cannot Register');
