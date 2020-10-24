@@ -4,26 +4,26 @@
     <b-row class="pt-3">
       <b-col class="p-3">
         <b-card sub-title="Total Follower">
-          <p class="h2 mb-2"><b-icon icon="people"></b-icon> 10,000</p>
-          <b-card-text>Today</b-card-text>
+          <p class="h2 mb-2"><b-icon icon="people-fill"></b-icon> {{stat.totalFollowers}}</p>
+          <b-card-text style="font-size: 12px;">Last update: {{stat.lastUpdate}}</b-card-text>
         </b-card>
       </b-col>
       <b-col class="p-3">
         <b-card sub-title="Total Customer">
-          <p class="h2 mb-2"><b-icon icon="person-check"></b-icon> 10,000</p>
-          <b-card-text>Today</b-card-text>
+          <p class="h2 mb-2"><b-icon icon="person-check-fill"></b-icon> {{stat.totalCustomers}}</p>
+          <b-card-text style="font-size: 12px;">Last update: {{stat.lastUpdate}}</b-card-text>
         </b-card>
       </b-col>
       <b-col class="p-3">
         <b-card sub-title="Total Block">
-          <p class="h2 mb-2"><b-icon icon="person-x"></b-icon> 10,000</p>
-          <b-card-text>Today</b-card-text>
+          <p class="h2 mb-2"><b-icon icon="person-x-fill"></b-icon> {{stat.totalBlock}}</p>
+          <b-card-text style="font-size: 12px;">Last update: {{stat.lastUpdate}}</b-card-text>
         </b-card>
       </b-col>
       <b-col class="p-3">
-        <b-card sub-title="Total New Customer">
-          <p class="h2 mb-2"><b-icon icon="person-plus"></b-icon> 10,000</p>
-          <b-card-text>Today</b-card-text>
+        <b-card sub-title="Tageted Reaches">
+          <p class="h2 mb-2"><b-icon icon="person-bounding-box"></b-icon> {{stat.targetedReaches}}</p>
+          <b-card-text style="font-size: 12px;">Last update: {{stat.lastUpdate}}</b-card-text>
         </b-card>
       </b-col>
     </b-row>
@@ -76,6 +76,13 @@ export default {
   data() {
     return {
       // Note 'isActive' is left out and will not appear in the rendered table
+      stat: {
+        totalFollowers: 0,
+        totalCustomers: 0,
+        totalBlock: 0,
+        targetedReaches: 0,
+        lastUpdate: 'Yesterday'
+      },
       fields: [
         {
           key: 'last_name',
@@ -139,7 +146,22 @@ export default {
     }
   },
   mounted(){
-    // console.log('auth',this.$auth.loggedIn)
+    // console.log('auth',this.$auth)
+    this.getStat()
+  },
+  methods:{
+    async getStat(){
+      const result = await this.$axios.$get('api/customerStat')
+      console.log('result ', result)
+      const stat = this.stat
+      if(result.status === 'success'){
+        stat.totalFollowers = result.data.followers
+        stat.totalCustomers = result.data.totalCustomers
+        stat.totalBlock = result.data.blocks
+        stat.targetedReaches = result.data.targetedReaches
+        stat.lastUpdate = result.data.lastUpdate
+      }
+    }
   }
 }
 </script>

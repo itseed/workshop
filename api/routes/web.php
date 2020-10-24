@@ -47,6 +47,8 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     $router->get('verify/{uid}', 'VerifyController@getID');
     $router->post('registerLine', 'VerifyController@addData');
 
+    $router->get('customerStat', 'DashboardController@customerStat');
+
     $router->group(['prefix' => 'customers', 'middleware' => 'auth'], function () use ($router) {
         // $router->get('/', 'CustomerController@getAll');
         // $router->get('/{id}', 'CustomerController@getID');

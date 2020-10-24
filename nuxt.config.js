@@ -70,7 +70,8 @@ export default {
         '^/api/verify' : '/api/v1/verify',
         '^/api/register' : '/api/v1/registerLine',
         '^/api/login' : '/api/v1/login',
-        '^/api/me' : '/api/v1/profile'
+        '^/api/me' : '/api/v1/profile',
+        '^/api' : '/api/v1'
       },
       changeOrigin: true
     }]
